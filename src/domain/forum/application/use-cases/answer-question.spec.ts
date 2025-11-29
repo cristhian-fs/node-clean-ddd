@@ -11,7 +11,7 @@ describe("Answer Use Case", () => {
     sut = new AnswerQuestionUseCase(inMemoryAnswersRepository);
   });
 
-  test("should be able to create a question", async () => {
+  test("should be able to answer a question", async () => {
     const { answer } = await sut.execute({
       content: "Nova resposta",
       instructorId: "1",

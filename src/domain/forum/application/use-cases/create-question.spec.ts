@@ -17,7 +17,7 @@ describe("Answer Use Case", () => {
       authorId: "1",
       title: "New question",
     });
-    expect(question.content).toEqual("Nova resposta");
+    expect(question.content).toEqual("Question content");
     expect(inMemoryQuestionsRepository.items[0].id).toEqual(question.id);
   });
 });
