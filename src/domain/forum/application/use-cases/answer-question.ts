@@ -3,27 +3,30 @@ import type { AnswersRepository } from "@/domain/forum/application/repositories/
 import { Answer } from "@/domain/forum/enterprise/entities/answer.js";
 
 interface AnswerQuestionUseCaseRequest {
-	instructorId: string;
-	questionId: string;
-	content: string;
+  instructorId: string;
+  questionId: string;
+  content: string;
 }
 
+interface AnswerQuestionUseCaseResponse {
+  answer: Answer;
+}
 export class AnswerQuestionUseCase {
-	constructor(private answersRepository: AnswersRepository) {}
+  constructor(private answersRepository: AnswersRepository) { }
 
-	async execute({
-		content,
-		instructorId,
-		questionId,
-	}: AnswerQuestionUseCaseRequest) {
-		const answer = Answer.create({
-			content,
-			authorId: new UniqueEntityID(instructorId),
-			questionId: new UniqueEntityID(questionId),
-		});
+  async execute({
+    content,
+    instructorId,
+    questionId,
+  }: AnswerQuestionUseCaseRequest): Promise<AnswerQuestionUseCaseResponse> {
+    const answer = Answer.create({
+      content,
+      authorId: new UniqueEntityID(instructorId),
+      questionId: new UniqueEntityID(questionId),
+    });
 
-		await this.answersRepository.create(answer);
+    await this.answersRepository.create(answer);
 
-		return answer;
-	}
+    return { answer };
+  }
 }
