@@ -1,0 +1,55 @@
+import { test, expect, describe, beforeEach } from "vitest";
+import { UniqueEntityID } from "@/core/entities/unique-entity-id.js";
+import { EditAnswerUseCase } from "./edit-answer.js";
+import { InMemoryAnswersRepository } from "test/repositories/in-memory-answers-repository.js";
+import { makeAnswer } from "test/factories/make-answer.js";
+
+let inMemoryAnswerRepository: InMemoryAnswersRepository;
+let sut: EditAnswerUseCase;
+
+describe("Edit Answer Use Case", () => {
+  beforeEach(() => {
+    inMemoryAnswerRepository = new InMemoryAnswersRepository();
+    sut = new EditAnswerUseCase(inMemoryAnswerRepository);
+  });
+
+  test("should be able to edit a answer", async () => {
+    const newAnswer = makeAnswer(
+      {
+        authorId: new UniqueEntityID("author-1"),
+      },
+      new UniqueEntityID("answer-1"),
+    );
+
+    await inMemoryAnswerRepository.create(newAnswer);
+
+    await sut.execute({
+      answerId: newAnswer.id.toString(),
+      authorId: "author-1",
+      content: "edited content",
+    });
+
+    expect(inMemoryAnswerRepository.items[0]).toMatchObject({
+      content: "edited content",
+    });
+  });
+
+  test("should not be able to edit a answer from another user", async () => {
+    const answer = makeAnswer(
+      {
+        authorId: new UniqueEntityID("author-1"),
+      },
+      new UniqueEntityID("answer-1"),
+    );
+
+    await inMemoryAnswerRepository.create(answer);
+
+    expect(async () => {
+      return await sut.execute({
+        authorId: "author-2",
+        answerId: "answer-1",
+        content: "edited content",
+      });
+    }).rejects.toBeInstanceOf(Error);
+  });
+});
