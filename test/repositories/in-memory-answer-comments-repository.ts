@@ -1,0 +1,11 @@
+import type { AnswerCommentsRepository } from "@/domain/forum/application/repositories/answer-comments-repository";
+import type { AnswerComment } from "@/domain/forum/enterprise/entities/answer-comment";
+
+export class InMemoryAnswerCommentsRepository
+  implements AnswerCommentsRepository {
+  public items: AnswerComment[] = [];
+
+  async create(comment: AnswerComment) {
+    this.items.push(comment);
+  }
+}
