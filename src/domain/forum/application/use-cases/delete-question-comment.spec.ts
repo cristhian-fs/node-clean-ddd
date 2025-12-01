@@ -21,7 +21,7 @@ describe("Delete Question Comment", () => {
 
     await sut.execute({
       questionCommentId: questionComment.id.toString(),
-      authorId: questionComment.id.toString(),
+      authorId: questionComment.authorId.toString(),
     });
 
     expect(inMemoryQuestionCommentsRepository.items).toHaveLength(0);
@@ -34,8 +34,8 @@ describe("Delete Question Comment", () => {
 
     await inMemoryQuestionCommentsRepository.create(questionComment);
 
-    expect(() => {
-      return sut.execute({
+    expect(async () => {
+      return await sut.execute({
         questionCommentId: questionComment.id.toString(),
         authorId: "author-2",
       });
