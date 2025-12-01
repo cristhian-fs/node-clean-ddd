@@ -14,28 +14,28 @@ describe("Delete Answer Comment", () => {
   });
 
   test("should be able to delete a question comment", async () => {
-    const questionComment = makeAnswerComment();
+    const answerComment = makeAnswerComment();
 
-    await inMemoryAnswerCommentsRepository.create(questionComment);
+    await inMemoryAnswerCommentsRepository.create(answerComment);
 
     await sut.execute({
-      answerCommentId: questionComment.id.toString(),
-      authorId: questionComment.id.toString(),
+      answerCommentId: answerComment.id.toString(),
+      authorId: answerComment.authorId.toString(),
     });
 
     expect(inMemoryAnswerCommentsRepository.items).toHaveLength(0);
   });
 
   test("should not be able to delete another user question comment", async () => {
-    const questionComment = makeAnswerComment({
+    const answerComment = makeAnswerComment({
       authorId: new UniqueEntityID("author-1"),
     });
 
-    await inMemoryAnswerCommentsRepository.create(questionComment);
+    await inMemoryAnswerCommentsRepository.create(answerComment);
 
     expect(() => {
       return sut.execute({
-        answerCommentId: questionComment.id.toString(),
+        answerCommentId: answerComment.id.toString(),
         authorId: "author-2",
       });
     }).rejects.toBeInstanceOf(Error);
