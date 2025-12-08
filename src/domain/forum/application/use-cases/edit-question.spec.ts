@@ -1,8 +1,9 @@
 import { test, expect, describe, beforeEach } from "vitest";
-import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository.js";
-import { makeQuestion } from "test/factories/make-question.js";
-import { UniqueEntityID } from "@/core/entities/unique-entity-id.js";
-import { EditQuestionUseCase } from "./edit-question.js";
+import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository";
+import { makeQuestion } from "test/factories/make-question";
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { EditQuestionUseCase } from "./edit-question";
+import { NotAllowedError } from "./errors/not-allowed-error";
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let sut: EditQuestionUseCase;
@@ -46,13 +47,14 @@ describe("Edit Question Use Case", () => {
 
     await inMemoryQuestionsRepository.create(question);
 
-    expect(async () => {
-      return await sut.execute({
-        authorId: "author-2",
-        title: "Edited question",
-        questionId: "question-1",
-        content: "edited content",
-      });
-    }).rejects.toBeInstanceOf(Error);
+    const result = await sut.execute({
+      authorId: "author-2",
+      title: "Edited question",
+      questionId: "question-1",
+      content: "edited content",
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(NotAllowedError);
   });
 });

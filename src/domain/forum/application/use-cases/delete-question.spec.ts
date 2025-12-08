@@ -1,8 +1,9 @@
 import { test, expect, describe, beforeEach } from "vitest";
-import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository.js";
-import { DeleteQuestionUseCase } from "./delete-question.js";
-import { makeQuestion } from "test/factories/make-question.js";
-import { UniqueEntityID } from "@/core/entities/unique-entity-id.js";
+import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository";
+import { DeleteQuestionUseCase } from "./delete-question";
+import { makeQuestion } from "test/factories/make-question";
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { NotAllowedError } from "./errors/not-allowed-error";
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let sut: DeleteQuestionUseCase;
@@ -41,11 +42,12 @@ describe("Delete Question Use Case", () => {
 
     await inMemoryQuestionsRepository.create(question);
 
-    expect(async () => {
-      return await sut.execute({
-        authorId: "author-1",
-        questionId: "question-2",
-      });
-    }).rejects.toBeInstanceOf(Error);
+    const result = await sut.execute({
+      authorId: "author-2",
+      questionId: "question-1",
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(NotAllowedError);
   });
 });

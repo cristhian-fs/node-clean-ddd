@@ -1,7 +1,7 @@
 import { test, expect, describe, beforeEach } from "vitest";
-import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository.js";
-import { makeQuestion } from "test/factories/make-question.js";
-import { FetchRecentQuestionsUseCase } from "./fetch-recent-questions.js";
+import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository";
+import { makeQuestion } from "test/factories/make-question";
+import { FetchRecentQuestionsUseCase } from "./fetch-recent-questions";
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let sut: FetchRecentQuestionsUseCase;
@@ -23,11 +23,11 @@ describe("Fetch Recent Questions", () => {
       makeQuestion({ createdAt: new Date(2025, 11, 3) }),
     );
 
-    const { questions } = await sut.execute({
+    const result = await sut.execute({
       page: 1,
     });
 
-    expect(questions).toEqual([
+    expect(result.value?.questions).toEqual([
       expect.objectContaining({ createdAt: new Date(2025, 11, 3) }),
       expect.objectContaining({ createdAt: new Date(2025, 11, 2) }),
       expect.objectContaining({ createdAt: new Date(2025, 11, 1) }),
@@ -39,10 +39,10 @@ describe("Fetch Recent Questions", () => {
       await inMemoryQuestionsRepository.create(makeQuestion());
     }
 
-    const { questions } = await sut.execute({
+    const result = await sut.execute({
       page: 2,
     });
 
-    expect(questions).toHaveLength(2);
+    expect(result.value?.questions).toHaveLength(2);
   });
 });

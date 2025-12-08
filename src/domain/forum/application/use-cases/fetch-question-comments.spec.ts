@@ -1,11 +1,8 @@
 import { test, expect, describe, beforeEach } from "vitest";
-import { InMemoryAnswersRepository } from "test/repositories/in-memory-answers-repository.js";
-import { FetchQuestionAnswersUseCase } from "./fetch-question-answers.js";
-import { makeAnswer } from "test/factories/make-answer.js";
-import { UniqueEntityID } from "@/core/entities/unique-entity-id.js";
-import { InMemoryQuestionCommentsRepository } from "test/repositories/in-memory-question-comments-repository.js";
-import { FetchQuestionCommentsUseCase } from "./fetch-question-comments.js";
-import { makeQuestionComment } from "test/factories/make-question-comment.js";
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { InMemoryQuestionCommentsRepository } from "test/repositories/in-memory-question-comments-repository";
+import { FetchQuestionCommentsUseCase } from "./fetch-question-comments";
+import { makeQuestionComment } from "test/factories/make-question-comment";
 
 let inMemoryQuestionCommentsRepository: InMemoryQuestionCommentsRepository;
 let sut: FetchQuestionCommentsUseCase;
@@ -34,12 +31,12 @@ describe("Fetch Question Answers", () => {
         questionId: new UniqueEntityID("question-1"),
       }),
     );
-    const { questionComments } = await sut.execute({
+    const result = await sut.execute({
       page: 1,
       questionId: "question-1",
     });
 
-    expect(questionComments).toHaveLength(3);
+    expect(result.value?.questionComments).toHaveLength(3);
   });
 
   test("should be able to get paginated question answers", async () => {
@@ -51,11 +48,11 @@ describe("Fetch Question Answers", () => {
       );
     }
 
-    const { questionComments } = await sut.execute({
+    const result = await sut.execute({
       page: 2,
       questionId: "question-1",
     });
 
-    expect(questionComments).toHaveLength(2);
+    expect(result.value?.questionComments).toHaveLength(2);
   });
 });

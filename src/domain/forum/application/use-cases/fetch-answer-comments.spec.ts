@@ -1,6 +1,6 @@
 import { test, expect, describe, beforeEach } from "vitest";
-import { UniqueEntityID } from "@/core/entities/unique-entity-id.js";
-import { makeAnswerComment } from "test/factories/make-answer-comment.js";
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { makeAnswerComment } from "test/factories/make-answer-comment";
 import { FetchAnswerCommentsUseCase } from "./fetch-answer-comments";
 import { InMemoryAnswerCommentsRepository } from "test/repositories/in-memory-answer-comments-repository";
 
@@ -30,12 +30,12 @@ describe("Fetch answer Answers", () => {
         answerId: new UniqueEntityID("answer-1"),
       }),
     );
-    const { answerComments } = await sut.execute({
+    const result = await sut.execute({
       page: 1,
       answerId: "answer-1",
     });
 
-    expect(answerComments).toHaveLength(3);
+    expect(result.value?.answerComments).toHaveLength(3);
   });
 
   test("should be able to get paginated answer answers", async () => {
@@ -47,11 +47,11 @@ describe("Fetch answer Answers", () => {
       );
     }
 
-    const { answerComments } = await sut.execute({
+    const result = await sut.execute({
       page: 2,
       answerId: "answer-1",
     });
 
-    expect(answerComments).toHaveLength(2);
+    expect(result.value?.answerComments).toHaveLength(2);
   });
 });

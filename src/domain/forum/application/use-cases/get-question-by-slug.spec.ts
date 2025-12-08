@@ -1,8 +1,8 @@
 import { test, expect, describe, beforeEach } from "vitest";
-import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository.js";
-import { GetQuestionBySlugUseCase } from "./get-question-by-slug.js";
-import { Slug } from "../../enterprise/entities/value-objects/slug.js";
-import { makeQuestion } from "test/factories/make-question.js";
+import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questions-repository";
+import { Slug } from "../../enterprise/entities/value-objects/slug";
+import { makeQuestion } from "test/factories/make-question";
+import { GetQuestionBySlugUseCase } from "./get-question-by-slug";
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let sut: GetQuestionBySlugUseCase;
@@ -19,10 +19,11 @@ describe("Get Question By Slug", () => {
     });
     await inMemoryQuestionsRepository.create(newQuestion);
 
-    const { question } = await sut.execute({
+    const result = await sut.execute({
       slug: "example-question",
     });
-    expect(question.content).toBeTruthy();
-    expect(question.title).toEqual(newQuestion.title);
+
+    expect(result.value?.question.id).toBeTruthy();
+    expect(result.value?.question.title).toEqual(newQuestion.title);
   });
 });
