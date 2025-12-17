@@ -4,13 +4,19 @@ import { InMemoryAnswersRepository } from "test/repositories/in-memory-answers-r
 import { DeleteAnswerUseCase } from "./delete-answer.js";
 import { makeAnswer } from "test/factories/make-answer.js";
 import { NotAllowedError } from "./errors/not-allowed-error.js";
+import { InMemoryAnswerAttachmentsRepository } from "test/repositories/in-memory-answer-attachments-repository.js";
 
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
+let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
 let sut: DeleteAnswerUseCase;
 
 describe("Delete Answer Use Case", () => {
   beforeEach(() => {
-    inMemoryAnswersRepository = new InMemoryAnswersRepository();
+    inMemoryAnswerAttachmentsRepository =
+      new InMemoryAnswerAttachmentsRepository();
+    inMemoryAnswersRepository = new InMemoryAnswersRepository(
+      inMemoryAnswerAttachmentsRepository,
+    );
     sut = new DeleteAnswerUseCase(inMemoryAnswersRepository);
   });
 
